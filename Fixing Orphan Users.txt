@@ -1,0 +1,31 @@
+script:
+use db_name
+go
+sp_change_users_login 'report'
+go
+-------------------------------------------------------
+After getting report map the user and login
+--------------------------------------------
+script:
+sp_change_users_login 'update_one', 'username', 'loginname'
+
+---------------------------------------------------------------
+In case you have multiple Orphan users, then it’s pretty time consuming to map user to login one by one, to overcome this problem, we can do all at once using following 
+TSQL statement
+
+DECLARE @username varchar(50)
+DECLARE fixusers CURSOR FOR
+SELECT UserName = name FROM master..sysusers
+WHERE issqluser = 1 and (sid is not null and sid <> 0x0)
+and suser_sname(sid) is null
+ORDER BY name
+OPEN fixusers
+FETCH NEXT FROM fixusers
+INTO @username WHILE @@FETCH_STATUS = 0
+BEGIN
+EXEC sp_change_users_login 'update_one', @username, @username
+FETCH NEXT FROM fixusers
+INTO @username
+END
+CLOSE fixusers
+DEALLOCATE fixusers

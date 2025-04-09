@@ -1,0 +1,51 @@
+SELECT name, pvt_key_encryption_type_desc, pvt_key_last_backup_date 
+FROM sys.certificates;
+
+USE master;  
+GO  
+CREATE MASTER KEY ENCRYPTION BY PASSWORD = '<UseStrongPasswordHere>';  
+go  
+
+CREATE CERTIFICATE UserAdminCer
+    ENCRYPTION BY PASSWORD = 'MyPasswordGoesHere1234'  
+    WITH SUBJECT = 'User Admin access',   
+    EXPIRY_DATE = '12/31/2922';  -- Error 3701 will occur if this date is not in the future
+GO  
+
+BACKUP CERTIFICATE CertName TO FILE = 'C:\SQL2019\certbk.cert'
+WITH PRIVATE KEY (
+FILE = 'C:\SQL2019\certkey.pvk',
+ENCRYPTION BY PASSWORD = 'bkPofcert!')
+
+USE AdventureWorks2012;  
+GO  
+
+CREATE DATABASE ENCRYPTION KEY  
+WITH ALGORITHM = AES_128  
+ENCRYPTION BY SERVER CERTIFICATE MyServerCert;  
+GO
+
+CREATE LOGIN UserAdminAccount
+   FROM CERTIFICATE UserAdminCer;
+GO
+
+CREATE USER UserAdminAccount
+   FROM CERTIFICATE UserAdminCer;
+GO
+GRANT EXECUTE ON usradm.udp_ManageLogin TO UserAdminAccount;
+GO
+
+ADD SIGNATURE TO usradm.udp_ManageLogin
+   BY CERTIFICATE UserAdminCer
+    WITH PASSWORD = 'MyPasswordGoesHere1234';  
+GO  
+
+GRANT CONTROL SERVER TO UserAdminAccount;
+GO  
+
+ALTER DATABASE AdventureWorks2012  
+SET ENCRYPTION ON;  
+GO  
+
+Select db_name(database_id), encryption_state, percent_complete, Key_algorithm, Key_length 
+from sys.dm_database_encryption_keys
