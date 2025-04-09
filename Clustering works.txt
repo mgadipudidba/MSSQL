@@ -1,0 +1,38 @@
+How Clustering Works:
+
+A failover cluster instance (FCI) consists of multiple nodes (physical/virtual servers) connected through shared storage (e.g., SAN).
+
+The SQL Server instance is installed on the cluster, and a virtual network name (VNN) and virtual IP address are configured.
+
+If the active node fails, the cluster moves the SQL Server service to a standby node, ensuring availability.
+
+Requirements for SQL Server Clustering:
+Windows Server Failover Clustering (WSFC) must be configured.
+Shared storage (e.g., SAN, S2D) accessible to all cluster nodes.
+
+All nodes must run the same version and edition of Windows Server and SQL Server.
+
+Nodes should be in the same Active Directory domain.
+
+Key Concepts in SQL Server Clustering
+
+#FCI Failover Cluster Instance:
+
+A SQL Server instance installed on a Windows failover cluster.
+It runs on one node at a time, and in case of failure, it moves to another node (failover).
+
+#Nodes:
+
+Servers (physical or virtual) that participate in the cluster. Each node has access to shared storage.
+Cluster Resources:
+
+Components like the SQL Server service, IP addresses, and disk storage, managed by the cluster.
+
+#Quorum:
+
+A mechanism to ensure the cluster continues to function correctly by maintaining consistency between nodes.
+Types include Node Majority, File Share Witness, and Cloud Witness.
+
+#Shared_Storage:
+
+A critical component where the database files reside. All nodes must have access to this shared storage.

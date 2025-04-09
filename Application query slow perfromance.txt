@@ -1,0 +1,100 @@
+If your SQL Server application suddenly starts running slow after working fine for a few days, identifying the root cause of the performance issues is essential. There are several approaches you can take to diagnose and resolve the slow performance.
+
+Here’s a guide to help you identify the issue:
+
+To track down slow-running queries in SQL Server, you can use the sys. dm_exec_query_stats view. Two important columns returned by this view are last_elapsed_time and last_worker_time. The last_elapsed_time column shows how long it took to execute the most recent request in microseconds.
+
+
+1. Check SQL Server's Execution Plan:
+SQL Server generates execution plans for queries, which can help in understanding why a query might be slow.
+
+Use SQL Server Management Studio (SSMS) to examine the execution plans of slow-running queries.
+Run SET STATISTICS IO ON; SET STATISTICS TIME ON; to get detailed output on I/O and time statistics.
+Analyze the execution plan for costly operations (e.g., table scans, missing indexes, expensive joins).
+Example Query:
+
+SET STATISTICS IO ON;
+SET STATISTICS TIME ON;
+SELECT * FROM your_table WHERE your_condition;
+SET STATISTICS IO OFF;
+SET STATISTICS TIME OFF;
+2. Check Wait Statistics:
+SQL Server tracks waits that occur while the system is waiting for resources. By analyzing wait statistics, you can identify bottlenecks.
+
+Run this query to get the top wait types:
+
+SELECT wait_type, wait_time_ms, waiting_tasks_count
+FROM sys.dm_exec_requests
+WHERE session_id > 50
+ORDER BY wait_time_ms DESC;
+Common wait types:
+
+CXPACKET: Parallelism issues.
+PAGEIOLATCH_*: Disk I/O waits.
+LCK_M_*: Locking waits.
+ASYNC_NETWORK_IO: Network I/O issues.
+3. Check Resource Utilization:
+CPU Usage: High CPU utilization could indicate queries are consuming too many resources.
+Disk I/O: Check if slow disk operations are causing delays. Look for high disk latency.
+Memory Usage: Ensure there’s enough memory available. Memory pressure could lead to paging and slow performance.
+You can use Performance Monitor (PerfMon) or SQL Server's dynamic views to check for resource bottlenecks:
+
+For CPU usage: sys.dm_exec_requests or sys.dm_exec_query_stats.
+For memory: sys.dm_os_memory_clerks.
+For I/O: sys.dm_io_virtual_file_stats.
+4. Look for Blocking Queries:
+Blocking occurs when one query holds a lock on resources that other queries need.
+
+To find blocked sessions:
+
+SELECT blocking_session_id, session_id, wait_type, wait_time, wait_resource
+FROM sys.dm_exec_requests
+WHERE blocking_session_id <> 0;
+You can kill the blocking session if necessary:
+
+KILL [blocking_session_id];
+5. Review Query Performance:
+Review queries that are running slower than usual. Look for:
+
+Missing indexes.
+Expensive operations (e.g., JOIN with large tables, GROUP BY, ORDER BY).
+Subqueries or scalar functions that may be causing inefficiencies.
+Consider running Query Store to track and analyze query performance over time. Query Store retains historical data on query performance, allowing you to spot regression issues.
+
+6. Check for Index Fragmentation:
+Fragmented indexes can lead to slower query performance. You can check index fragmentation using:
+
+SELECT
+    object_name(i.object_id) AS table_name,
+    i.name AS index_name,
+    avg_fragmentation_in_percent
+FROM sys.dm_db_index_physical_stats(DB_ID(), NULL, NULL, NULL, 'DETAILED') AS s
+INNER JOIN sys.indexes AS i
+    ON s.object_id = i.object_id
+    AND s.index_id = i.index_id
+WHERE avg_fragmentation_in_percent > 30;
+If fragmentation is high, you can reorganize or rebuild indexes:
+
+ALTER INDEX index_name ON table_name REBUILD;
+7. Check for Blocking or Deadlocks:
+Deadlocks can slow down or even halt query execution. You can use the following to check for deadlocks:
+
+Use Extended Events to capture deadlocks.
+Check the system health session:
+SELECT * FROM sys.dm_xe_sessions WHERE name = 'system_health';
+8. Check the SQL Server Logs:
+Look for any unusual messages, errors, or warnings in the SQL Server error logs. Sometimes, performance issues could be related to misconfigurations, hardware failures, or system issues.
+
+9. Check for Parameter Sniffing:
+SQL Server may sometimes create an inefficient execution plan due to parameter sniffing. If a query is performing poorly due to parameter sniffing, try using OPTION (RECOMPILE) or investigate alternative indexing strategies.
+
+10. Check Recent Changes:
+Sometimes, slowdowns can be traced back to recent changes in the environment:
+
+New queries or code changes.
+Changes to server configurations.
+Software or hardware updates.
+Tools to Help Diagnose Performance:
+SQL Server Profiler: Capture real-time activity for slow queries.
+Extended Events: Monitor and log specific events for a more granular analysis.
+Dynamic Management Views (DMVs): Provide real-time insights into performance metrics.

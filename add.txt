@@ -1,0 +1,70 @@
+
+Google Nexus 4
+IMEI---355136-05-629755-2
+Model--LG-E960
+serial no.---048558df0e8f0933
+
+Lost Google Nexus 4
+
+IMEI---355136-05-480296-5
+Model--LG-E960
+serial no.---303KPAE480269
+
+http://sqlserverpedia.com/blog/category/sql-server-management/
+http://www.informit.com/guides/content.aspx?g=sqlserver&seqNum=135   (excel to sql server)
+http://travel.tejasri.in/p/funny-mails.html
+http://www.amaderforum.com/forumdisplay.php?f=21&order=desc&page=2
+
+http://www.bytetips.com/some-command-prompt-commands/
+telnet towel.blinkenlights.nl
+
+
+
+
+
+
+Job Description:
+
+Monitoring:
+Scheduled job monitoring
+Backup monitoring
+SQL Server monitoring
+Replication monitoring
+Backup and Recovery:
+Setting up backups for new databases
+Recovery of databases from backups
+Install and upgrades:
+SQL Server Software Installation Support
+SQL Service pack and patches Update
+Database creation and file group allocation
+Linked Server Creation and issues
+Sql Server upgradation.
+Performance Tuning:
+Trace Analysis
+Query Optimization and Query Execution plan Analysis
+Database parameters tuning
+
+Security:
+SQL Login, database user creation and granting access
+Schema creation and granting access
+Managing user privileges
+Scheduled Maintenance:
+Re-Indexing
+Update Statistics
+Shrink Database
+Removal of trace files/old log files
+
+Miscellaneous:
+Addressing database space issues
+Incident management and Change Management
+Database shutdown / restart for any scheduled maintenance tasks not related to database (like OS/SAN maintenance activities)
+Permanent fixes for repetitive problems
+Non-Production environment refreshes(backup/restore)
+Troubleshooting space issues like transaction log full,data file full,clearing the drive space
+Troubleshooting deadlock and blocking issues.
+Database mirroring, Log shipping, Database snapshots and clusters.
+
+Capacity Planning:
+Analysis of database growth and recommendations for additional capacity (hardware, memory etc)
+
+
