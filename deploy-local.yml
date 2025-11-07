@@ -1,0 +1,22 @@
+name: Deploy SQL Script to Local SQL Server
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'createdb.sql'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run SQL script on local SQL Server
+        shell: pwsh
+        run: |
+          Write-Host "Executing SQL script on local SQL Server..."
+          sqlcmd -S GADIPUDI -E -i createdb.sql
