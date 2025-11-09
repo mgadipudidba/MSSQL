@@ -6,12 +6,19 @@ on:
 
 jobs:
   run-sql:
-    runs-on: self-hosted  # runs on your own PC runner
+    runs-on: self-hosted
+
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install SQL Server PowerShell module
+        shell: pwsh
+        run: |
+          Install-Module -Name SqlServer -Force -Scope CurrentUser
+          Import-Module SqlServer
 
       - name: Run createdb.sql
         shell: pwsh
         run: |
-          Install-Module -Name SqlServer -Force -Scope CurrentUser
+          # Replace with your actual SQL instance name
           Invoke-Sqlcmd -ServerInstance "GADIPUDI" -Database "master" -InputFile "${{ github.workspace }}\createdb.sql"
