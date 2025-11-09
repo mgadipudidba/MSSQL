@@ -1,0 +1,17 @@
+name: Execute SQL on Local Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  run-sql:
+    runs-on: self-hosted  # runs on your own PC runner
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run createdb.sql
+        shell: pwsh
+        run: |
+          Install-Module -Name SqlServer -Force -Scope CurrentUser
+          Invoke-Sqlcmd -ServerInstance "GADIPUDI" -Database "master" -InputFile "${{ github.workspace }}\createdb.sql"
