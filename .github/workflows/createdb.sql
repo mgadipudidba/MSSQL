@@ -41,9 +41,13 @@ GO
 INSERT INTO dbo.Employees (FirstName, LastName, Email)
 VALUES
 ('John', 'Doe', 'john.doe@example.com'),
-('Jane', 'Smith', 'jane.smith@example.com');
+  ('Jane', 'Smith', 'jane.smith@example.com'),
+  ('Robert', 'Brown', 'robert.brown@example.com'),
+  ('Emily', 'Johnson', 'emily.johnson@example.com'),
+  ('Michael', 'Williams', 'michael.williams@example.com');
 GO
 
 -- 5. Select data to verify
 SELECT * FROM dbo.Employees;
+
 GO
