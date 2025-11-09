@@ -14,11 +14,20 @@ jobs:
       - name: Install SQL Server PowerShell module
         shell: pwsh
         run: |
-          Install-Module -Name SqlServer -Force -Scope CurrentUser
+          if (-not (Get-Module -ListAvailable -Name SqlServer)) {
+            Install-Module -Name SqlServer -Force -Scope CurrentUser
+          }
           Import-Module SqlServer
 
       - name: Run createdb.sql
         shell: pwsh
         run: |
-          # Replace with your actual SQL instance name
-          Invoke-Sqlcmd -ServerInstance "GADIPUDI" -Database "master" -InputFile "${{ github.workspace }}\createdb.sql"
+          # disable certificate validation for local/self-signed
+          $ErrorActionPreference = "Stop"
+          $params = @{
+            ServerInstance = "GADIPUDI"
+            Database       = "master"
+            InputFile      = "${{ github.workspace }}\createdb.sql"
+            TrustServerCertificate = $true
+          }
+          Invoke-Sqlcmd @params
